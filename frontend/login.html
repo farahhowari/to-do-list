@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      font-family: 'Roboto', sans-serif;
+      background: #dbc5b3;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 400px;
+      background-color: #6a523f;
+      border-radius: 10px;
+      padding: 30px 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #dbc5b3;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    p {
+      font-size: 14px;
+      color: #444;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      width: 100%;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: #dbc5b3;
+    }
+
+    .form-group select,
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+
+    .form-group button {
+      margin-top: 10px;
+      width: 100%;
+      padding: 12px;
+      font-size: 14px;
+      background: #dbc5b3;
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .form-group button:hover {
+      background: #805c3e;
+      transform: scale(1.05);
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-wrapper input {
+      padding-right: 45px;
+    }
+
+    .password-wrapper i {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: #444;
+    }
+
+    @media screen and (max-width: 480px) {
+      h1 {
+        font-size: 20px;
+      }
+
+      p {
+        font-size: 13px;
+      }
+
+      .form-group input,
+      .form-group select {
+        font-size: 13px;
+        padding: 8px;
+      }
+
+      .form-group button {
+        font-size: 13px;
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Login</h1>
+    <form>
+      <div class="form-group">
+        <label for="Email">Email</label>
+        <input type="email" id="Email" name="Email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="password-wrapper">
+          <input type="password" id="password" name="password" required />
+          <i id="togglePassword">&#128065;</i>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <button type="submit">Login</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    document.querySelector("form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      console.log("Form submitted");
+
+      const email = document.getElementById("Email").value;
+      const password = document.getElementById("password").value;
+
+      try {
+        const response = await fetch("http://localhost:3000/api/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+        console.log("Response received:", data);
+
+        if (response.ok && data.token && data.user) {
+          sessionStorage.setItem("token", data.token);
+          sessionStorage.setItem("userId", data.user._id);
+          sessionStorage.setItem("name", data.user.name);
+          sessionStorage.setItem("email", data.user.email);
+
+          alert("Login successful!");
+         
+          
+        window.location.href="home1.html"
+          
+        } else {
+          alert(data.message || "Login failed");
+        }
+      } catch (err) {
+        console.error("Error during login:", err);
+        alert("Server error");
+      }
+    });
+
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordField = document.getElementById("password");
+
+    togglePassword.addEventListener("click", () => {
+      const type = passwordField.getAttribute("type") === "password" ? "text" : "password";
+      passwordField.setAttribute("type", type);
+      togglePassword.textContent = type === "password" ? "👁️" : "🙈";
+    });
+  </script>
+</body>
+</html>

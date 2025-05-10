@@ -24,7 +24,7 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
         window.location.href = 'login.html'; 
       } else {
         return res.json().then(data => {
-          throw new Error(data.message || 'حدث خطأ أثناء التسجيل');
+          throw new Error(data.message || ("An error occurred "));
         });
       }
     })

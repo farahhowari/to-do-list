@@ -122,92 +122,66 @@
   </div>
 
   <script>
-   
-    if (localStorage.getItem("darkMode") === "true") {
-      document.body.classList.add("dark-mode");
+  // تفعيل الوضع الليلي حسب التخزين
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark-mode");
+  }
+
+  // عرض اسم المستخدم والبريد من sessionStorage
+  const name = sessionStorage.getItem("name");
+  const email = sessionStorage.getItem("email");
+
+  document.getElementById("profileName").textContent = name ?? "Not available";
+  document.getElementById("profileEmail").textContent = email ?? "Not available";
+
+  // حساب المهام المنجزة وغير المنجزة من localStorage
+  const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+  const completed = tasks.filter(task => task.done).length;
+  const pending = tasks.length - completed;
+
+  document.getElementById("completedCount").textContent = completed;
+  document.getElementById("pendingCount").textContent = pending;
+
+  // حذف المستخدم
+  async function deleteUser() {
+    const token = sessionStorage.getItem("token");
+    const userId = sessionStorage.getItem("id");
+
+    if (!token || !userId) {
+      alert("Unauthorized: Please log in.");
+      return;
     }
 
-   
-    const name = sessionStorage.getItem("name");
-    const email = sessionStorage.getItem("email");
+    const conf = confirm("Are you sure you want to delete this user?");
+    const DELETE_URL = `http://localhost:3000/api/deleteUser/${userId}`;
 
-    document.getElementById("profileName").textContent = name || " ";
-    document.getElementById("profileEmail").textContent = email || " ";
-
-   
-    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const completed = tasks.filter(task => task.done).length;
-    const pending = tasks.length - completed;
-
-    document.getElementById("completedCount").textContent = completed;
-    document.getElementById("pendingCount").textContent = pending;
-
-  
-    document.addEventListener("DOMContentLoaded", () => {
-      function updateTaskStats() {
-        const allTasks = document.querySelectorAll('.check');
-        let completed = 0;
-        let pending = 0;
-
-        allTasks.forEach(checkbox => {
-          if (checkbox.checked) {
-            completed++;
-          } else {
-            pending++;
-          }
+    if (conf) {
+      try {
+        const response = await fetch(DELETE_URL, {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            "Auth": token
+          },
+          body: JSON.stringify({ id: userId })
         });
 
-        document.getElementById('completedCount').textContent = completed;
-        document.getElementById('pendingCount').textContent = pending;
-      }
+        const data = await response.json();
 
-      updateTaskStats();
-
-      document.addEventListener('change', (e) => {
-        if (e.target.classList.contains('check')) {
-          updateTaskStats();
+        if (response.ok && data.message === "User Deleted successfully") {
+          alert("User Deleted successfully");
+          sessionStorage.clear();
+          localStorage.clear();
+          window.location.href = "signup.html";
+        } else {
+          alert("An error occurred: " + (data.message || "Unknown error"));
         }
-      });
-    });
-
-  
-    async function deleteUser() {
-      const token = sessionStorage.getItem("token");
-
-      if (!token) {
-        alert("Unauthorized: Please log in.");
-        return;
-      }
-
-      const conf = confirm("Are you sure you want to delete this user?");
-      const DELETE_URL = "http://localhost:3000/api/deleteUser";
-
-      if (conf) {
-        try {
-          const response = await fetch(DELETE_URL, {
-            method: "DELETE",
-            headers: {
-              "Content-Type": "application/json",
-              "Auth": token
-            },
-          });
-
-          const data = await response.json();
-
-          if (data.message === "User Deleted successfully") {
-            alert("User Deleted successfully");
-            sessionStorage.clear();
-            localStorage.clear();
-            window.location.href = "signup.html";
-          } else {
-            alert("An error occurred");
-          }
-        } catch (err) {
-          console.error(err);
-          alert("Failed to connect to server");
-        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to connect to server");
       }
     }
-  </script>
+  }
+</script>
 </body>
 </html>

@@ -69,17 +69,64 @@
 </p>
 
  </section>
-<!-- contact us-->
- <section id="contact">
-    <h2> Contact us</h2>
-    <p class="p"> If you have any questions or feedback, feel free to reach out! </p>
-    <form>
-        <input type="text" placeholder="your name" required>
-        <input type="email" placeholder="your email" required>
-        <textarea placeholder="your message" rows="4"required></textarea>
-        <button type="submit"> send message</button>
-    </form>
- </section>
+<section id="contact">
+  <h2>Contact Us</h2>
   
+  <form id="contactForm">
+    <input type="text" id="name" placeholder="Your name" required readonly />
+    <input type="email" id="email" placeholder="Your email" required readonly />
+    <textarea id="message" placeholder="Your message" rows="4" required></textarea>
+    <button type="submit">Send message</button>
+  </form>
+
+  
+ 
+</section>
+<script>
+  // عند تحميل الصفحة، نعبي الاسم والايميل من sessionStorage
+  window.addEventListener("DOMContentLoaded", () => {
+    const name = sessionStorage.getItem("name") || "";
+    const email = sessionStorage.getItem("email") || "";
+
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+
+    nameInput.value = name;
+    emailInput.value = email;
+
+    // نجعل الحقول readonly لمنع التعديل
+    nameInput.readOnly = true;
+    emailInput.readOnly = true;
+  });
+
+  document.getElementById("contactForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const message = document.getElementById("message").value.trim();
+
+    if (!name || !email || !message) {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    const contactMessage = { name, email, message, date: new Date().toISOString() };
+
+    // جلب الرسائل القديمة من localStorage
+    const messages = JSON.parse(localStorage.getItem("contactMessages")) || [];
+
+    // إضافة الرسالة الجديدة
+    messages.push(contactMessage);
+
+    // حفظها من جديد في localStorage
+    localStorage.setItem("contactMessages", JSON.stringify(messages));
+
+    alert("Message sent successfully!");
+
+    // إعادة تعيين حقل الرسالة فقط (لأن الاسم والايميل readonly)
+    document.getElementById("message").value = "";
+  });
+</script> 
 </body>
 </html>

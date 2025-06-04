@@ -116,25 +116,29 @@
       </div>
     </div>
 
-    <div>
+    
+    <div style="margin-top: 15px;">
+  <button class="deletebtn" style="background-color:#6a523f;" onclick="goBack()">⬅️ back </button>
+</div>
+<div style="margin-top: 15px;">
       <button class="deletebtn" onclick="deleteUser()">delete account</button>
     </div>
   </div>
 
   <script>
-  // تفعيل الوضع الليلي حسب التخزين
+  
   if (localStorage.getItem("darkMode") === "true") {
     document.body.classList.add("dark-mode");
   }
 
-  // عرض اسم المستخدم والبريد من sessionStorage
+ 
   const name = sessionStorage.getItem("name");
   const email = sessionStorage.getItem("email");
 
   document.getElementById("profileName").textContent = name ?? "Not available";
   document.getElementById("profileEmail").textContent = email ?? "Not available";
 
-  // حساب المهام المنجزة وغير المنجزة من localStorage
+ 
   const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
   const completed = tasks.filter(task => task.done).length;
   const pending = tasks.length - completed;
@@ -142,10 +146,10 @@
   document.getElementById("completedCount").textContent = completed;
   document.getElementById("pendingCount").textContent = pending;
 
-  // حذف المستخدم
+ 
   async function deleteUser() {
     const token = sessionStorage.getItem("token");
-    const userId = sessionStorage.getItem("id");
+    const userId = sessionStorage.getItem("userId");
 
     if (!token || !userId) {
       alert("Unauthorized: Please log in.");
@@ -168,7 +172,7 @@
 
         const data = await response.json();
 
-        if (response.ok && data.message === "User Deleted successfully") {
+        if (response.ok && data.message === "User deleted successfully") {
           alert("User Deleted successfully");
           sessionStorage.clear();
           localStorage.clear();
@@ -182,6 +186,10 @@
       }
     }
   }
+  function goBack() {
+  window.location.href = "home1.html"; 
+}
+
 </script>
 </body>
 </html>

@@ -4,7 +4,7 @@ require('../controllers/UserController');
 
 const router = express.Router();
 
-router.get('/Users',auth, getAllUsers);
+router.get('/Users', getAllUsers);
 router.post('/createuser', createuser);
 router.put('/updateUser/:id', UpdateUserByID);
 router.delete('/deleteUser/:id', deleteUserById);

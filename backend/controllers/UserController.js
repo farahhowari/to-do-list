@@ -48,18 +48,38 @@ exports.createuser=async(req,res)=>{
         res.status(500).json({message:error.message}) 
     }
  }
- exports.deleteUserById =async (req,res)=>{
-    const {id} =req.params 
-    const{name,email,password}=req.body
-    try {
- const userTodelete= await User.findByIdAndDelete(id,{name,email,password,role})
-    res.status(200).json({message:"User Deleted successfully"})
+ exports.deleteUserById = async (req, res) => {
+  const { id } = req.params;
 
+  try {
+    const userToDelete = await User.findByIdAndDelete(id);
+
+    if (!userToDelete) {
+      return res.status(404).json({ message: "User not found" });
     }
- catch (error) {
-        res.status (500).json({message:error.message})
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.deleteUserById = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const userToDelete = await User.findByIdAndDelete(id);
+
+    if (!userToDelete) {
+      return res.status(404).json({ message: "User not found" });
     }
-}
+
+    res.status(200).json({ message: "User deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
 exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {

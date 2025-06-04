@@ -46,7 +46,29 @@ html {
   .navbar a:hover {
     text-decoration: underline;
   }
-  
+ @media screen and (max-width: 768px) {
+  .navbar {
+    padding: 10px 15px;
+  }
+
+  .navbar .logo {
+    font-size: 16px;
+    margin-left: 10px;
+  }
+
+  .sideright {
+    gap: 15px;
+  }
+
+  .navbar a {
+    font-size: 12px;
+  }
+
+  .profile-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+}
 
   .bi-person-fill {
     width: 22px;
@@ -112,7 +134,37 @@ html {
   cursor: pointer;
   align-self: flex-end;
 }
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+    padding: 15px;
+  }
 
+  .sidebar-content button {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .close-btn {
+    font-size: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .sidebar {
+    width: 160px;
+    padding: 10px;
+  }
+
+  .sidebar-content button {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .close-btn {
+    font-size: 18px;
+  }
+}
   .main {
     margin-top: 60px;
     padding: 10px;
